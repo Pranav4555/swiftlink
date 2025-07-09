@@ -17,7 +17,7 @@ def create_short_url(
     current_user: models.User = Depends(auth.get_current_user)
 ):
     short_key = base64.urlsafe_b64encode(os.urandom(4)).decode("utf-8").rstrip("=")
-    short_url = f"http://10.123.195.39:8000/{short_key}"  # Replace with dynamic IP if needed
+    short_url = f"https://swiftlink-4y8p.onrender.com/{short_key}"  # Replace with dynamic IP if needed
 
     # Generate QR code (base64)
     qr = qrcode.make(short_url)
