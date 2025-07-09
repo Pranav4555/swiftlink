@@ -10,6 +10,8 @@ from . import models, schemas, database, auth
 
 router = APIRouter()
 
+RENDER_BASE_URL = "https://swiftlink-4y8p.onrender.com"
+
 @router.post("/shorten", response_model=schemas.URLInfo)
 def create_short_url(
     request: schemas.URLCreate,
@@ -17,9 +19,9 @@ def create_short_url(
     current_user: models.User = Depends(auth.get_current_user)
 ):
     short_key = base64.urlsafe_b64encode(os.urandom(4)).decode("utf-8").rstrip("=")
-    short_url = f"https://swiftlink-4y8p.onrender.com/{short_key}"  # Replace with dynamic IP if needed
+    short_url = f"{RENDER_BASE_URL}/{short_key}"  # ✅ Use public base URL
 
-    # Generate QR code (base64)
+    # Generate QR code as base64
     qr = qrcode.make(short_url)
     buffered = io.BytesIO()
     qr.save(buffered, format="PNG")
@@ -66,9 +68,9 @@ def download_qr(short_key: str, db: Session = Depends(database.get_db)):
     if not url:
         raise HTTPException(status_code=404, detail="Short URL not found")
 
-    short_url = f"http://10.123.195.39:8000/{short_key}"
+    short_url = f"{RENDER_BASE_URL}/{short_key}"  # ✅ Use same public domain
 
-    # Regenerate QR code for direct PNG download
+    # Regenerate QR for download
     qr_img = qrcode.make(short_url)
     img_io = io.BytesIO()
     qr_img.save(img_io, format="PNG")
